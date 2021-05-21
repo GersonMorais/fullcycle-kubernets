@@ -16,9 +16,21 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "gersonedson/hello-go:v4"
-          env:
-            - name: NAME
-              value: "Gerson"
-            - name: AGE
-              value: "36"
+          image: "gersonedson/hello-go:v5.2"
+          envFrom:
+            - configMapRef:
+                name: goserver-env
+            - secretRef:
+                name: goserver-secret
+
+          volumeMounts:
+            - mountPath: "/go/myfamily"
+              name: config
+
+      volumes:
+        - name: config
+          configMap:
+            name: configmap-family
+            items:
+              - key: members
+                path: "family.txt"
